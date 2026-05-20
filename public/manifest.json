@@ -1,0 +1,17 @@
+{
+  "name": "Cherry Glam",
+  "short_name": "CherryGlam",
+  "description": "Tu tienda de maquillaje premium",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faeff1",
+  "theme_color": "#62101b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
