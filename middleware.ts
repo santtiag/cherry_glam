@@ -6,49 +6,61 @@ export async function middleware(request: NextRequest) {
     request,
   });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
+  try {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) =>
+              request.cookies.set(name, value)
+            );
+            supabaseResponse = NextResponse.next({
+              request,
+            });
+            cookiesToSet.forEach(({ name, value, options }) =>
+              supabaseResponse.cookies.set(name, value, options)
+            );
+          },
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
+      }
+    );
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // Protect admin routes
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      if (!user) {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
+
+      // Check admin role
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError || profile?.role !== "admin") {
+        return NextResponse.redirect(new URL("/", request.url));
+      }
     }
-  );
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user) {
+  } catch (error) {
+    // Si algo falla en Supabase (credenciales, red, etc.),
+    // no dejamos que el middleware crashee.
+    // Para rutas admin: redirigimos a home por seguridad.
+    // Para el resto: permitimos el paso.
+    if (request.nextUrl.pathname.startsWith("/admin")) {
+      console.error("Middleware error (admin route):", error);
       return NextResponse.redirect(new URL("/", request.url));
     }
-
-    // Check admin role
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    if (profile?.role !== "admin") {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+    // Para rutas publicas: simplemente continuamos sin auth
   }
 
   return supabaseResponse;
