@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, Trash2, Plus } from "lucide-react";
+import { TableSkeleton } from "@/components/admin/TableSkeleton";
 import type { TimelineEvent } from "@/types/timeline";
 
 export default function AdminTimelinePage() {
@@ -76,9 +77,9 @@ export default function AdminTimelinePage() {
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center">Cargando...</div>
+        <TableSkeleton />
       ) : events.length === 0 ? (
-        <div className="rounded-2xl bg-white p-12 text-center shadow-sm border border-cherry-100">
+        <div className="rounded-2xl bg-white p-12 text-center shadow-[var(--shadow-soft)] border border-cherry-100">
           <p className="text-muted-foreground">No hay eventos aún.</p>
           <Button
             onClick={() => {
@@ -92,7 +93,7 @@ export default function AdminTimelinePage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white shadow-sm border border-cherry-100 overflow-hidden">
+        <div className="rounded-2xl bg-white shadow-[var(--shadow-soft)] border border-cherry-100 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

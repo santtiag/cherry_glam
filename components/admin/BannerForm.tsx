@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { Banner } from "@/types/banner";
 
 interface BannerFormProps {
@@ -74,17 +75,12 @@ export function BannerForm({ banner, onSuccess }: BannerFormProps) {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="image_url">URL de Imagen *</Label>
-        <Input
-          id="image_url"
-          name="image_url"
-          type="url"
-          defaultValue={banner?.image_url}
-          required
-          placeholder="https://..."
-        />
-      </div>
+      <ImageUpload
+        name="image_url"
+        label="Imagen"
+        defaultValue={banner?.image_url}
+        required
+      />
 
       <div className="space-y-2">
         <Label htmlFor="link">Link (CTA)</Label>

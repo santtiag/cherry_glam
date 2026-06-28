@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { createBlogPost, updateBlogPost } from "@/lib/actions/blog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { Bold, Italic, Link2, List, Heading } from "lucide-react";
 import type { BlogPost } from "@/types/blog";
 
 interface BlogEditorProps {
@@ -17,6 +19,26 @@ interface BlogEditorProps {
 export function BlogEditor({ post, onSuccess }: BlogEditorProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  // Envuelve la selección del textarea con tags HTML (sin librerías).
+  function wrap(before: string, after: string) {
+    const el = contentRef.current;
+    if (!el) return;
+    const { selectionStart: s, selectionEnd: e, value } = el;
+    const selected = value.slice(s, e) || "texto";
+    el.value = value.slice(0, s) + before + selected + after + value.slice(e);
+    el.focus();
+    el.setSelectionRange(s + before.length, s + before.length + selected.length);
+  }
+
+  const tools = [
+    { icon: Bold, label: "Negrita", action: () => wrap("<strong>", "</strong>") },
+    { icon: Italic, label: "Itálica", action: () => wrap("<em>", "</em>") },
+    { icon: Heading, label: "Subtítulo", action: () => wrap("<h2>", "</h2>") },
+    { icon: List, label: "Lista", action: () => wrap("<ul>\n  <li>", "</li>\n</ul>") },
+    { icon: Link2, label: "Enlace", action: () => wrap('<a href="https://">', "</a>") },
+  ];
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
@@ -86,16 +108,11 @@ export function BlogEditor({ post, onSuccess }: BlogEditorProps) {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="cover_image">URL de Portada</Label>
-        <Input
-          id="cover_image"
-          name="cover_image"
-          type="url"
-          defaultValue={post?.cover_image || ""}
-          placeholder="https://..."
-        />
-      </div>
+      <ImageUpload
+        name="cover_image"
+        label="Imagen de portada"
+        defaultValue={post?.cover_image || ""}
+      />
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -111,14 +128,32 @@ export function BlogEditor({ post, onSuccess }: BlogEditorProps) {
 
       <div className="space-y-2">
         <Label htmlFor="content">Contenido *</Label>
+        <div className="flex flex-wrap gap-1 rounded-t-lg border border-b-0 border-input bg-cherry-50/50 p-1.5">
+          {tools.map((t) => (
+            <button
+              key={t.label}
+              type="button"
+              onClick={t.action}
+              title={t.label}
+              aria-label={t.label}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-cherry transition-colors hover:bg-cherry hover:text-white"
+            >
+              <t.icon className="h-4 w-4" />
+            </button>
+          ))}
+        </div>
         <Textarea
           id="content"
           name="content"
+          ref={contentRef}
           defaultValue={post?.content}
           rows={12}
           required
+          className="rounded-t-none"
         />
-        <p className="text-xs text-muted-foreground">Soporta HTML básico.</p>
+        <p className="text-xs text-muted-foreground">
+          Selecciona texto y usa los botones para dar formato. Soporta HTML.
+        </p>
       </div>
 
       <div className="space-y-2">

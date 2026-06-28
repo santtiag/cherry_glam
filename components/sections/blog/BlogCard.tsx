@@ -12,7 +12,7 @@ interface BlogCardProps {
 export function BlogCard({ post }: BlogCardProps) {
   return (
     <Link href={`/blog/${post.slug}`} className="group block">
-      <article className="flex flex-col h-full rounded-2xl bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-cherry-100">
+      <article className="flex flex-col h-full rounded-2xl bg-white overflow-hidden shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-lift)] hover:-translate-y-1.5 transition-all duration-300 border border-cherry-100 hover:border-gold/40">
         <div className="relative aspect-[16/10] overflow-hidden">
           <Image
             src={
@@ -27,7 +27,7 @@ export function BlogCard({ post }: BlogCardProps) {
         </div>
         <div className="flex flex-col flex-1 p-5">
           <div className="flex items-center gap-2 mb-3">
-            <span className="inline-flex items-center rounded-full bg-cherry/10 px-2.5 py-0.5 text-xs font-medium text-cherry">
+            <span className="inline-flex items-center rounded-full bg-cherry/10 px-2.5 py-0.5 text-xs font-medium text-cherry ring-1 ring-gold/30">
               {post.category}
             </span>
             {post.published_at && (

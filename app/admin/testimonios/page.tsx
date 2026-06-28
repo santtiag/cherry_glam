@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, Trash2, Plus, Star } from "lucide-react";
+import { TableSkeleton } from "@/components/admin/TableSkeleton";
 import type { Testimonial } from "@/types/testimonial";
 
 export default function AdminTestimoniosPage() {
@@ -77,9 +78,9 @@ export default function AdminTestimoniosPage() {
       </div>
 
       {isLoading ? (
-        <div className="py-12 text-center">Cargando...</div>
+        <TableSkeleton />
       ) : testimonials.length === 0 ? (
-        <div className="rounded-2xl bg-white p-12 text-center shadow-sm border border-cherry-100">
+        <div className="rounded-2xl bg-white p-12 text-center shadow-[var(--shadow-soft)] border border-cherry-100">
           <p className="text-muted-foreground">No hay testimonios aún.</p>
           <Button
             onClick={() => {
@@ -93,7 +94,7 @@ export default function AdminTestimoniosPage() {
           </Button>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white shadow-sm border border-cherry-100 overflow-hidden">
+        <div className="rounded-2xl bg-white shadow-[var(--shadow-soft)] border border-cherry-100 overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow>

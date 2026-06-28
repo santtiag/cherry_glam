@@ -11,7 +11,7 @@ interface TestimonialCardProps {
 export function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
     <div className="w-[350px] shrink-0 mx-3">
-      <div className="rounded-2xl bg-white p-6 shadow-sm border border-cherry-100 h-full">
+      <div className="group rounded-2xl bg-white p-6 shadow-[var(--shadow-soft)] border border-cherry-100 h-full transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-lift)] hover:border-gold/40">
         <div className="flex items-center gap-3 mb-4">
           <Avatar className="h-12 w-12 border-2 border-cherry/10">
             <AvatarImage src={testimonial.avatar_url || undefined} />

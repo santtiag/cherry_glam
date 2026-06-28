@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import type { Testimonial } from "@/types/testimonial";
 
 interface TestimonialFormProps {
@@ -65,16 +66,11 @@ export function TestimonialForm({ testimonial, onSuccess }: TestimonialFormProps
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="avatar_url">URL de Foto</Label>
-        <Input
-          id="avatar_url"
-          name="avatar_url"
-          type="url"
-          defaultValue={testimonial?.avatar_url || ""}
-          placeholder="https://..."
-        />
-      </div>
+      <ImageUpload
+        name="avatar_url"
+        label="Foto"
+        defaultValue={testimonial?.avatar_url || ""}
+      />
 
       <div className="space-y-2">
         <Label htmlFor="rating">Calificación (1-5) *</Label>

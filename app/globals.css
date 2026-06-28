@@ -53,6 +53,18 @@
   --color-gold: #d4a574;
   --color-gold-light: #e8c9a8;
   --color-gold-dark: #b8854a;
+  --gradient-gold: linear-gradient(
+    100deg,
+    #b8854a 0%,
+    #e8c9a8 35%,
+    #d4a574 55%,
+    #f3e3cf 75%,
+    #b8854a 100%
+  );
+  --gradient-cherry: linear-gradient(135deg, #62101b 0%, #8a1a2a 55%, #4a0c14 100%);
+  --shadow-soft: 0 2px 8px -2px rgb(98 16 27 / 0.08), 0 8px 24px -8px rgb(98 16 27 / 0.10);
+  --shadow-lift: 0 10px 30px -10px rgb(98 16 27 / 0.22), 0 4px 12px -6px rgb(98 16 27 / 0.12);
+  --shadow-gold: 0 8px 28px -10px rgb(184 133 74 / 0.45);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -63,7 +75,7 @@
 }
 
 :root {
-  --background: oklch(0.985 0.01 10);
+  --background: oklch(0.985 0.014 60);
   --foreground: oklch(0.2 0.02 10);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.2 0.02 10);
@@ -179,4 +191,94 @@
 
 .animate-marquee:hover {
   animation-play-state: paused;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -150% 0;
+  }
+  100% {
+    background-position: 250% 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Texto/acento con relleno dorado degradado */
+.text-gold-gradient {
+  background: var(--gradient-gold);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline dorada (separadores y subrayados) */
+.gold-hairline {
+  height: 1px;
+  background: var(--gradient-gold);
+  background-size: 200% auto;
+  border: none;
+}
+
+/* Brillo dorado que cruza un elemento en hover (CTAs, badges) */
+.shimmer-on-hover {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.shimmer-on-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgb(255 255 255 / 0.35) 50%,
+    transparent 70%
+  );
+  background-size: 250% 100%;
+  background-position: -150% 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.shimmer-on-hover:hover::after {
+  animation: shimmer 1.1s ease-in-out;
+}
+
+/* Textura de grano sutil sobre fondos de marca */
+.grain-overlay {
+  position: relative;
+  isolation: isolate;
+}
+.grain-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-pulse-slow,
+  .animate-float {
+    animation: none;
+  }
+  .shimmer-on-hover:hover::after {
+    animation: none;
+  }
 }

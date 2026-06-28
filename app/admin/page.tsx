@@ -2,12 +2,14 @@ import { getAllBanners } from "@/lib/actions/banners";
 import { getAllPosts } from "@/lib/actions/blog";
 import { getAllTestimonials } from "@/lib/actions/testimonials";
 import { getAllTimelineEvents } from "@/lib/actions/timeline";
+import { getAllDiscounts } from "@/lib/actions/discounts";
 import { StatCard } from "@/components/admin/StatCard";
 import {
   Image,
   FileText,
   MessageSquareQuote,
   Timer,
+  Tag,
   Eye,
   MousePointerClick,
 } from "lucide-react";
@@ -17,6 +19,7 @@ export default async function AdminDashboardPage() {
   let postsCount = 0;
   let testimonialsCount = 0;
   let timelineCount = 0;
+  let discountsCount = 0;
 
   try {
     const banners = await getAllBanners();
@@ -46,6 +49,13 @@ export default async function AdminDashboardPage() {
     timelineCount = 0;
   }
 
+  try {
+    const discounts = await getAllDiscounts();
+    discountsCount = discounts.length;
+  } catch {
+    discountsCount = 0;
+  }
+
   return (
     <div className="space-y-8">
       <div>
@@ -53,11 +63,16 @@ export default async function AdminDashboardPage() {
         <p className="text-muted-foreground">Resumen de tu sitio web</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <StatCard
           title="Banners"
           value={bannersCount}
           icon={<Image className="h-6 w-6 text-cherry" />}
+        />
+        <StatCard
+          title="Descuentos"
+          value={discountsCount}
+          icon={<Tag className="h-6 w-6 text-cherry" />}
         />
         <StatCard
           title="Entradas Blog"
@@ -109,6 +124,13 @@ export default async function AdminDashboardPage() {
             >
               <Image className="h-5 w-5 text-cherry" />
               <span className="text-sm">Gestionar Banners</span>
+            </a>
+            <a
+              href="/admin/descuentos"
+              className="flex items-center gap-3 p-3 rounded-xl hover:bg-cherry-50 transition-colors"
+            >
+              <Tag className="h-5 w-5 text-cherry" />
+              <span className="text-sm">Gestionar Descuentos</span>
             </a>
             <a
               href="/admin/blog"
